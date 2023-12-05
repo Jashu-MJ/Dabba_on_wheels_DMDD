@@ -24,5 +24,5 @@
 2. Reports are written in the form of views. (VIEWS_SCRIPTS.sql)
 3. Creation of procedures for customer, manager, and delivery partner.(create_proceduresl.sql)
 4. User creations. (create_users.sql) (we can't drop users after assigning the roles, we need to drop roles and then drop users)
-5. Roles are created and roles are assigned to users. Users are granted access to required views, and procedures. (Roles.sql)
+5. Roles are created and roles are assigned to users. Users are granted access to required views, and procedures.(Roles.sql)
 
