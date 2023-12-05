@@ -51,8 +51,8 @@ CREATE TABLE LOCATION (
     city           VARCHAR2(20 CHAR) NOT NULL,
     state          VARCHAR2(20 CHAR) NOT NULL,
     zipcode        NUMBER(5) NOT NULL,
-    CONSTRAINT location_pk PRIMARY KEY ( loc_id ),
-    CONSTRAINT location__un UNIQUE ( street_address )
+    CONSTRAINT location_pk PRIMARY KEY ( loc_id )
+--    CONSTRAINT location__un UNIQUE ( street_address )
     );
 /
 -- Inserting data into the LOCATION table
