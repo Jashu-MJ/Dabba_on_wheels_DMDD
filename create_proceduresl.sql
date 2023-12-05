@@ -55,7 +55,6 @@ IF p_email is null or length(p_email) =0 or length(p_email) > 50 THEN
       -- Raise an exception with a custom error message
       RAISE EXC_VALID_EMAIL;
    END IF;
-   
      -- Check if the provided address greater than 50 characters
 IF p_street_address is null or length(p_street_address) =0 or length(p_street_address) > 50 THEN
         RAISE EXC_STREET;
@@ -72,12 +71,11 @@ IF p_state is null or length(p_state) =0 or length(p_state) > 20 THEN
     IF p_zipcode is null or length(p_zipcode) =0 or length(p_zipcode) != 5 THEN
         RAISE EXC_ZIP;
     END IF;
-    
     -- Check if the provided email already exists
 
         SELECT count(*) INTO v_email_count FROM CUSTOMER WHERE c_email = p_email;
         -- If the email exists, raise an exception
-        if v_email_count>0 THEN
+        if v_email_count is null or v_email_count>0 THEN
             RAISE v_email_exists;
         end if;
 
@@ -86,22 +84,22 @@ IF p_state is null or length(p_state) =0 or length(p_state) > 20 THEN
         WHERE c_phone_number = p_phone_number;
         
         -- If the phone number exists, raise an exception
-       if v_phone_count>0 THEN
+       if v_phone_count is null or v_phone_count>0 THEN
             RAISE v_phone_exists;
         end if;
 
     -- Check if the location already exists
+    BEGIN
     SELECT loc_id INTO v_loc_id FROM LOCATION WHERE street_address = p_street_address
       AND city = p_city AND state = p_state AND zipcode = p_zipcode;
-
-    -- If location doesn't exist, create a new location record
-    IF v_loc_id IS NULL THEN
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        -- If location doesn't exist, create a new location record
         INSERT INTO LOCATION (loc_id, street_address, city, state, zipcode)
         VALUES (LOCATION_SEQ.NEXTVAL, p_street_address, p_city, p_state, p_zipcode);
-
         -- Retrieve the newly created location ID
         SELECT LOCATION_SEQ.CURRVAL INTO v_loc_id FROM DUAL;
-    END IF;
+    END;
 
     -- Create a new customer record
     INSERT INTO CUSTOMER (c_id, loc_id, c_name, dob, gender, c_email, c_phone_number)
@@ -113,7 +111,7 @@ IF p_state is null or length(p_state) =0 or length(p_state) > 20 THEN
     o_customer_id := v_c_id;
     COMMIT;
     -- Print the customer ID or use it as needed
-    DBMS_OUTPUT.PUT_LINE('Customer ID: ' || v_c_id);
+    DBMS_OUTPUT.PUT_LINE('Customer created succesfully with customer id '|| o_customer_id );
 EXCEPTION
     WHEN v_email_exists THEN
         DBMS_OUTPUT.PUT_LINE('Error: Email already exists.');
@@ -140,12 +138,20 @@ EXCEPTION
 END CUSTOMER_REGISTRATION_PROCEDURE;
 /
 
+SET SERVEROUTPUT ON
+CREATE OR REPLACE PACKAGE common_procs AS 
+PROCEDURE ViewAllMealTypes; 
+PROCEDURE ViewAllSubscriptionTypes; 
+END common_procs; 
+/ 
+
+SET SERVEROUTPUT ON
+CREATE OR REPLACE PACKAGE BODY common_procs AS
 -- 2. ViewAllSubscriptionTypes
 -- input: None
 -- output: displays all the subscription types available in the system.
 -- exception: None
-SET SERVEROUTPUT ON
-CREATE OR REPLACE PROCEDURE ViewAllSubscriptionTypes IS
+PROCEDURE ViewAllSubscriptionTypes IS
 BEGIN
     FOR sub_type_rec IN (
         SELECT sub_type_id, type, price, meal_count
@@ -156,7 +162,24 @@ BEGIN
             ', Meal Count: ' || sub_type_rec.meal_count);
     END LOOP;
 END ViewAllSubscriptionTypes;
+-- 4. ViewAllMealTypes
+-- input: None
+-- output: displays all the meal types available in the system.
+-- exception: None
+PROCEDURE ViewAllMealTypes IS
+BEGIN
+    FOR meal_type_rec IN (
+        SELECT type 
+        FROM meal
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE(
+            'Meal Type: ' || meal_type_rec.type );
+    END LOOP;
+END ViewAllMealTypes;
+END common_procs; 
 /
+
+-- drop procedure ViewAllMealTypes
 
 -- 3. PurchaseSubscription
 -- INPUT : customer id, subscription type, payment amount
@@ -186,7 +209,7 @@ BEGIN
     -- Retrieve subscription type ID based on the provided subscription type
     SELECT sub_type_id INTO v_subscription_type_id
     FROM subscription_type
-    WHERE type = p_subscription_type;
+    WHERE lower(type) = lower(p_subscription_type);
 
     -- Check if the subscription type exists
     IF v_subscription_type_id IS NOT NULL THEN
@@ -255,22 +278,22 @@ EXCEPTION
 END PurchaseSubscription;
 /
 
--- 4. ViewAllMealTypes
--- input: None
--- output: displays all the meal types available in the system.
--- exception: None
-SET SERVEROUTPUT ON
-CREATE OR REPLACE PROCEDURE ViewAllMealTypes IS
-BEGIN
-    FOR meal_type_rec IN (
-        SELECT type 
-        FROM meal
-    ) LOOP
-        DBMS_OUTPUT.PUT_LINE(
-            'Meal Type: ' || meal_type_rec.type );
-    END LOOP;
-END ViewAllMealTypes;
-/
+---- 4. ViewAllMealTypes
+---- input: None
+---- output: displays all the meal types available in the system.
+---- exception: None
+--SET SERVEROUTPUT ON
+--CREATE OR REPLACE PROCEDURE ViewAllMealTypes IS
+--BEGIN
+--    FOR meal_type_rec IN (
+--        SELECT type 
+--        FROM meal
+--    ) LOOP
+--        DBMS_OUTPUT.PUT_LINE(
+--            'Meal Type: ' || meal_type_rec.type );
+--    END LOOP;
+--END ViewAllMealTypes;
+--/
 
 -- 5. book_meal
 -- INPUT: Customer_id, meal type, time slot, delivery date
@@ -353,7 +376,7 @@ EXCEPTION
     WHEN EXC_TIME_SLOT THEN
         DBMS_OUTPUT.PUT_LINE('Enter a valid Time slot');    
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Customer does not have an active subscription.');
+        DBMS_OUTPUT.PUT_LINE('Customer does not have an active subscription.' || SQLERRM);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END book_meal;

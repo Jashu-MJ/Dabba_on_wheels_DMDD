@@ -31,7 +31,7 @@ END;
 -- procedure 2 execution
 SET SERVEROUTPUT ON;
 BEGIN
-    ViewAllSubscriptionTypes;
+    common_procs.ViewAllSubscriptionTypes;
 END;
 /
 
@@ -51,7 +51,7 @@ END;
 SET SERVEROUTPUT ON;
 
 BEGIN
-    ViewAllMealTypes;
+    common_procs.ViewAllMealTypes;
 END;
 /
 
