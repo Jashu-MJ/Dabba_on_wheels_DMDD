@@ -36,17 +36,20 @@ GRANT SELECT ON CUSTOMER_CHOICE_BY_SEASON_VIEW TO CUSTOMER;
 -----------------------------------------------------
 grant execute on CUSTOMER_REGISTRATION_PROCEDURE to CUSTOMER; 
 
-grant execute on ViewAllSubscriptionTypes to CUSTOMER; 
+--grant execute on common_procs.ViewAllSubscriptionTypes to CUSTOMER; 
+grant execute on common_procs to CUSTOMER;
 
 grant execute on PurchaseSubscription to CUSTOMER; 
 
-grant execute on ViewAllMealTypes to CUSTOMER; 
+--grant execute on common_procs.ViewAllMealTypes to CUSTOMER; 
 
 grant execute on book_meal to CUSTOMER; 
 
 grant execute on generate_invoice to CUSTOMER; 
 
 grant execute on get_delivery_details to CUSTOMER; 
+
+grant execute on update_customer_details to CUSTOMER; 
 
 -----------------------------------------------------
 
@@ -67,11 +70,12 @@ GRANT SELECT ON  DELIVERY_DETAILS_VIEW TO MANAGER;
 
 -- grant permission to procedures.
 -----------------------------------------------------
-grant execute on ViewAllSubscriptionTypes to MANAGER; 
+--grant execute on common_procs.ViewAllSubscriptionTypes to MANAGER; 
+grant execute on common_procs to MANAGER;
 
 grant execute on add_or_update_subscription_type to MANAGER; 
 
-grant execute on ViewAllMealTypes to MANAGER; 
+--grant execute on common_procs.ViewAllMealTypes to MANAGER; 
 
 grant execute on add_meal to MANAGER; 
 

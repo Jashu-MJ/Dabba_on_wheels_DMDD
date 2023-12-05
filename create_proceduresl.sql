@@ -140,12 +140,20 @@ EXCEPTION
 END CUSTOMER_REGISTRATION_PROCEDURE;
 /
 
+SET SERVEROUTPUT ON
+CREATE OR REPLACE PACKAGE common_procs AS 
+PROCEDURE ViewAllMealTypes; 
+PROCEDURE ViewAllSubscriptionTypes; 
+END common_procs; 
+/ 
+
+SET SERVEROUTPUT ON
+CREATE OR REPLACE PACKAGE BODY common_procs AS
 -- 2. ViewAllSubscriptionTypes
 -- input: None
 -- output: displays all the subscription types available in the system.
 -- exception: None
-SET SERVEROUTPUT ON
-CREATE OR REPLACE PROCEDURE ViewAllSubscriptionTypes IS
+PROCEDURE ViewAllSubscriptionTypes IS
 BEGIN
     FOR sub_type_rec IN (
         SELECT sub_type_id, type, price, meal_count
@@ -156,7 +164,43 @@ BEGIN
             ', Meal Count: ' || sub_type_rec.meal_count);
     END LOOP;
 END ViewAllSubscriptionTypes;
+-- 4. ViewAllMealTypes
+-- input: None
+-- output: displays all the meal types available in the system.
+-- exception: None
+PROCEDURE ViewAllMealTypes IS
+BEGIN
+    FOR meal_type_rec IN (
+        SELECT type 
+        FROM meal
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE(
+            'Meal Type: ' || meal_type_rec.type );
+    END LOOP;
+END ViewAllMealTypes;
+END common_procs; 
 /
+
+-- drop procedure ViewAllMealTypes
+
+--
+---- 2. ViewAllSubscriptionTypes
+---- input: None
+---- output: displays all the subscription types available in the system.
+---- exception: None
+--SET SERVEROUTPUT ON
+--CREATE OR REPLACE PROCEDURE ViewAllSubscriptionTypes IS
+--BEGIN
+--    FOR sub_type_rec IN (
+--        SELECT sub_type_id, type, price, meal_count
+--        FROM subscription_type
+--    ) LOOP
+--        DBMS_OUTPUT.PUT_LINE(
+--            'Type: ' || sub_type_rec.type ||', Price: ' || sub_type_rec.price ||
+--            ', Meal Count: ' || sub_type_rec.meal_count);
+--    END LOOP;
+--END ViewAllSubscriptionTypes;
+--/
 
 -- 3. PurchaseSubscription
 -- INPUT : customer id, subscription type, payment amount
@@ -255,22 +299,22 @@ EXCEPTION
 END PurchaseSubscription;
 /
 
--- 4. ViewAllMealTypes
--- input: None
--- output: displays all the meal types available in the system.
--- exception: None
-SET SERVEROUTPUT ON
-CREATE OR REPLACE PROCEDURE ViewAllMealTypes IS
-BEGIN
-    FOR meal_type_rec IN (
-        SELECT type 
-        FROM meal
-    ) LOOP
-        DBMS_OUTPUT.PUT_LINE(
-            'Meal Type: ' || meal_type_rec.type );
-    END LOOP;
-END ViewAllMealTypes;
-/
+---- 4. ViewAllMealTypes
+---- input: None
+---- output: displays all the meal types available in the system.
+---- exception: None
+--SET SERVEROUTPUT ON
+--CREATE OR REPLACE PROCEDURE ViewAllMealTypes IS
+--BEGIN
+--    FOR meal_type_rec IN (
+--        SELECT type 
+--        FROM meal
+--    ) LOOP
+--        DBMS_OUTPUT.PUT_LINE(
+--            'Meal Type: ' || meal_type_rec.type );
+--    END LOOP;
+--END ViewAllMealTypes;
+--/
 
 -- 5. book_meal
 -- INPUT: Customer_id, meal type, time slot, delivery date
@@ -353,7 +397,7 @@ EXCEPTION
     WHEN EXC_TIME_SLOT THEN
         DBMS_OUTPUT.PUT_LINE('Enter a valid Time slot');    
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('Customer does not have an active subscription.');
+        DBMS_OUTPUT.PUT_LINE('Customer does not have an active subscription.' || SQLERRM);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
 END book_meal;

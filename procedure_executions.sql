@@ -3,14 +3,14 @@
 --
 -- select * from all_views where lower(owner) = 'admin';
 -- select * from customer;
---SELECT * FROM ALL_PROCEDURES WHERE lower(OWNER) = 'admin';
+--  SELECT * FROM ALL_PROCEDURES WHERE lower(OWNER) = 'admin';
 
 DECLARE
     v_name VARCHAR2(50) := 'John Doe';
     v_dob DATE := TO_DATE('1990-05-15', 'YYYY-MM-DD');
     v_gender VARCHAR2(40) := 'qwerty';
-    v_email VARCHAR2(50) := 'asd11cqqo@email.edu';
-    v_phone_number NUMBER := 1214511101;
+    v_email VARCHAR2(50) := 'asd11cqqo@gmail.edu';
+    v_phone_number NUMBER := 1214511201;
     v_street_address VARCHAR2(50) := '123 Main St';
     v_city VARCHAR2(20) := 'Cityville';
     v_state VARCHAR2(20) := 'CA';
@@ -36,7 +36,7 @@ END;
 SET SERVEROUTPUT ON;
 
 BEGIN
-    ADMIN.ViewAllSubscriptionTypes;
+    admin.common_procs.ViewAllSubscriptionTypes;
 END;
 /
 
@@ -50,13 +50,13 @@ BEGIN
    ADMIN.PurchaseSubscription(v_customer_id, v_subscription_type, v_payment_amount);
 END;
 /
+--select * from subscription;
 
 -- procedure 4 execution
 
 SET SERVEROUTPUT ON;
-
 BEGIN
-    ADMIN.ViewAllMealTypes;
+    admin.common_procs.ViewAllMealTypes;
 END;
 /
 
@@ -73,8 +73,6 @@ BEGIN
 END;
 /
 
--- select * from subscription;
-
 -- procedure 6 execution
 SET SERVEROUTPUT ON;
 DECLARE
@@ -84,11 +82,13 @@ BEGIN
 END;
 /
 
+--select * from booking;
+
 -- procedure 7 execution
 
 SET SERVEROUTPUT ON;
 DECLARE
-  v_customer_id NUMBER := null; -- Provide the customer ID here
+  v_customer_id NUMBER := 555001; -- Provide the customer ID here
 BEGIN
   ADMIN.get_delivery_details(v_customer_id);
 END;
@@ -101,6 +101,8 @@ EXEC ADMIN.update_customer_details(p_customer_id => 555001, p_email => 'abc@emai
 -- Update both name and phone number
 EXEC ADMIN.update_customer_details(p_customer_id => 555012, p_name => 'Updated Name', p_phone_number => 9876159621);
 
+
+------ MANAGER WF --------------
 
 -- procedure 9 execution
 BEGIN
@@ -118,7 +120,7 @@ END;
 
 -- procedure 11 execution
 BEGIN
-    ADMIN.add_meal('VEgq');
+    ADMIN.add_meal('VEgqq');
 END;
 /
 
@@ -173,4 +175,3 @@ BEGIN
     admin.update_delivery_partner(p_dp_id => 3, p_d_email => 'new_quick_ship@example.com');
 END;
 /
-
