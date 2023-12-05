@@ -20,7 +20,7 @@
 3. Delivery partner also has an option to update their details.
 
 ## Code Execution
-1. Creation of tables, constraints, and inserting records .(DB_OBJECTS_CREATION_SCRIPTS.sql)
+1. Creation of tables, constraints, and inserting records.(DB_OBJECTS_CREATION_SCRIPTS.sql)
 2. Reports are written in the form of views.(VIEWS_SCRIPTS.sql)
 3. Creation of procedures for customer, manager, and delivery partner.(create_proceduresl.sql)
 4. User creations. (create_users.sql) (we can't drop users after assigning the roles, we need to drop roles and then drop users)
