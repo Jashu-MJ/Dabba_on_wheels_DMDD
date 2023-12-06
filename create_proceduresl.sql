@@ -278,22 +278,6 @@ EXCEPTION
 END PurchaseSubscription;
 /
 
----- 4. ViewAllMealTypes
----- input: None
----- output: displays all the meal types available in the system.
----- exception: None
---SET SERVEROUTPUT ON
---CREATE OR REPLACE PROCEDURE ViewAllMealTypes IS
---BEGIN
---    FOR meal_type_rec IN (
---        SELECT type 
---        FROM meal
---    ) LOOP
---        DBMS_OUTPUT.PUT_LINE(
---            'Meal Type: ' || meal_type_rec.type );
---    END LOOP;
---END ViewAllMealTypes;
---/
 
 -- 5. book_meal
 -- INPUT: Customer_id, meal type, time slot, delivery date
